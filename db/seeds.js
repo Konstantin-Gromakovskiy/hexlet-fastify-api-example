@@ -1,4 +1,4 @@
-import * as shemas from "./schemas.js";
+import * as schemas from "./schema.js";
 import { buildCourse, buildCourseLesson, buildUser } from "../lib/data.js";
 
 /**
