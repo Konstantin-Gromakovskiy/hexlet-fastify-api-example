@@ -12,7 +12,6 @@
     "@fastify/jwt": "^10.1.0",
     "@fastify/sensible": "^6.0.0",
     "@stoplight/prism-cli": "^5.15.11",
-    "@typespec/compiler": "^1.14.0",
     "abstract-logging": "^2.0.1",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
@@ -121,6 +120,9 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^10.5.0",
+    "@typespec/compiler": "^1.14.0",
+    "@typespec/http": "^1.14.0",
+    "@typespec/openapi3": "^1.14.0",
     "c8": "^11.0.0",
     "drizzle-kit": "^0.31.10"
   },
