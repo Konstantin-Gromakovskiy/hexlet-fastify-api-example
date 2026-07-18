@@ -129,7 +129,8 @@
   "scripts": {
     "test": "node --test",
     "start": "fastify start -l info app.js",
-    "dev": "fastify start -w -l info -P app.js"
+    "dev": "fastify start -w -l info -P app.js",
+    "typespec:compile": "npx tsp compile ."
   },
   "keywords": [],
   "author": "",

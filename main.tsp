@@ -3,100 +3,76 @@ import "@typespec/http";
 using Http;
 
 @service(#{ title: "Hexlet Fastify Rest Api Expemple" })
-@server("https://example.com", "Single server endpoint")
-namespace PetStore;
-
-model Pet {
-  id: int32;
-
-  @minLength(1)
-  name: string;
-
-  @minValue(0)
-  @maxValue(100)
-  age: int32;
-
-  kind: petType;
-}
-
-enum petType {
-  dog: "dog",
-  cat: "cat",
-  fish: "fish",
-  bird: "bird",
-  reptile: "reptile",
-}
-
-@route("/pets")
-namespace Pets {
-  @get
-  op listPets(): {
-    @statusCode statusCode: 200;
-    @body pets: Pet[];
-  };
-
-  @get
-  op getPet(@path petId: int32):
-    | {
-        @statusCode statusCode: 200;
-        @body pet: Pet;
-      }
-    | {
-        @statusCode statusCode: 404;
-        @body error: NotFoundError;
-      };
-
-  @post
-  op createPet(@body pet: Pet):
-    | {
-        @statusCode statusCode: 201;
-        @body newPet: Pet;
-      }
-    | {
-        @statusCode statusCode: 202;
-        @body acceptedPet: Pet;
-      }
-    | {
-        @statusCode statusCode: 400;
-        @body error: ValidationError;
-      };
-
-  @put
-  op updatePet(@path petId: int32, @body pet: Pet):
-    | {
-        @statusCode statusCode: 200;
-        @body updatedPet: Pet;
-      }
-    | {
-        @statusCode statusCode: 400;
-        @body error: ValidationError;
-      }
-    | {
-        @statusCode statusCode: 404;
-        @body error: NotFoundError;
-      };
-
-  @delete
-  op deletePet(@path petId: int32): {
-    @statusCode statusCode: 204;
-  };
-}
+namespace FastifyRestApiExample;
 
 @error
 model NotFoundError {
-  code: "NOT_FOUND";
-  message: string;
+  @statusCode _: 404;
 }
 
 @error
-model ValidationError {
-  code: "VALIDATION_ERROR";
-  message: string;
-  details: string[];
+model UnprocessableEntityError {
+  @statusCode _: 422;
 }
 
-@error
-model InternalServerError {
-  code: "INTERNAL_SERVER_ERROR";
-  message: string;
+model Timestamps {
+  createdAt: utcDateTime;
+}
+
+model User {
+  id: numeric;
+
+  @minLength(2)
+  @maxLength(100)
+  fullName: string | null;
+
+  @format("email")
+  email: string;
+
+  ...Timestamps;
+}
+
+model UserCreateDTO {
+  fullName?: string;
+  email: string;
+}
+
+model UserEditDTO {
+  fullName: string;
+}
+
+@route("/users")
+namespace users {
+  @get
+  @useAuth(BearerAuth)
+  op index(@query page?: numeric = 1): {
+    @body _: {
+      data: User[];
+    };
+  };
+
+  @get
+  @useAuth(BearerAuth)
+  op show(@path id: numeric):
+    | {
+        @body _: User;
+      }
+    | NotFoundError;
+
+  @patch
+  @useAuth(BearerAuth)
+  op update(@path id: numeric, @body _: UserCreateDTO):
+    | {
+        @body _: User;
+      }
+    | NotFoundError
+    | UnprocessableEntityError;
+
+  @delete
+  @useAuth(BearerAuth)
+  op destroy(@path id: numeric):
+    | {
+        @statusCode statusCode: 204;
+      }
+    | NotFoundError;
 }
