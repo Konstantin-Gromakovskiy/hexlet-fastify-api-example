@@ -1,6 +1,7 @@
 import { asc, eq } from "drizzle-orm";
 import * as schemas from "../../db/schema.js";
 import { schema } from "../../schema.js";
+import UserValidator from "../../validators/UserValidator.js";
 
 export default async function (fastify) {
   const db = fastify.db;
@@ -47,8 +48,8 @@ export default async function (fastify) {
       },
     },
     async (request, reply) => {
-      const { fullName, email } = request.body;
-      const [user] = await db.insert(schemas.users).values({ fullName, email }).returning();
+      const validate = await UserValidator.validate(request.body);
+      const [user] = await db.insert(schemas.users).values(validate).returning();
 
       return reply.code(201).send(user);
     },
