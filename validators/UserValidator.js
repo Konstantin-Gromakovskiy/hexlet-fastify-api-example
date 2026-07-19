@@ -14,7 +14,7 @@ const schema = vine
 const validator = vine.create(schema);
 
 class UserValidator {
-  static validate(data) {
+  static validate(data, db) {
     return validator.validate(data, { meta: { db } });
   }
 }

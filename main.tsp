@@ -6,13 +6,36 @@ using Http;
 namespace FastifyRestApiExample;
 
 @error
+model ProblemDetails {
+  @header("content-type") contentType: "application/problem+json";
+  type?: string;
+  title?: string;
+  status?: string;
+  detail?: string;
+  instance?: string;
+}
+
+@error
 model NotFoundError {
   @statusCode _: 404;
+  ...ProblemDetails;
+}
+
+@error
+model UnauthorizedError {
+  @statusCode _: 401;
+  ...ProblemDetails;
 }
 
 @error
 model UnprocessableEntityError {
   @statusCode _: 422;
+  ...ProblemDetails;
+  errors: Array<{
+    message: string;
+    rule: string;
+    field: string;
+  }>;
 }
 
 model Timestamps {
